@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvActName"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:text="Activity"/>
+
+    <TextView
+        android:id="@+id/tvActCost"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:layout_height="wrap_content"
+        android:text="Cost"/>
+
+    <TextView
+        android:id="@+id/tvActDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Date"/>
+</LinearLayout>

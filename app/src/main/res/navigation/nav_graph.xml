@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/destinationSelectionFragment">
+
+    <fragment
+        android:id="@+id/destinationSelectionFragment"
+        android:name="com.example.project12.DestinationSelectionFragment"
+        android:label="Destination Selection">
+        <!-- Action to move to the Accommodation finder fragment (to be created next) -->
+        <action
+            android:id="@+id/action_destinationSelection_to_accommodationFinder"
+            app:destination="@id/accommodationFinderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/accommodationFinderFragment"
+        android:name="com.example.project12.AccommodationFinderFragment"
+        android:label="Accommodation Finder">
+        <action
+            android:id="@+id/action_accommodationFinder_to_foodAndDiningFragment"
+            app:destination="@id/foodAndDiningFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/foodAndDiningFragment"
+        android:name="com.example.project12.FoodAndDiningFragment"
+        android:label="Food &amp; Dining" >
+        <action
+            android:id="@+id/action_foodAndDiningFragment_to_activitiesFinderFragment"
+            app:destination="@id/activitiesFinderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activitiesFinderFragment"
+        android:name="com.example.project12.ActivitiesFinderFragment"
+        android:label="Activities Finder">
+        <action
+            android:id="@+id/action_activitiesFinderFragment_to_dayByDayPlannerFragment"
+            app:destination="@id/dayByDayPlannerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dayByDayPlannerFragment"
+        android:name="com.example.project12.DayByDayPlannerFragment"
+        android:label="Day-by-Day Planner">
+        <action
+            android:id="@+id/action_dayByDayPlannerFragment_to_tripSummaryFragment"
+            app:destination="@id/tripSummaryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tripSummaryFragment"
+        android:name="com.example.project12.TripSummaryFragment"
+        android:label="Trip Summary" >
+        <!-- (Optional) Add actions from here if needed -->
+    </fragment>
+</navigation>

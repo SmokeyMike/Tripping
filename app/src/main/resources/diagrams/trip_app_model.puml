@@ -1,0 +1,134 @@
+@startuml
+'— define packages for clarity —
+package "com.example.project12.models" {
+  class Trip {
+    - tripId: String
+    - title: String
+    - startDate: Date
+    - endDate: Date
+    - places: List<TripPlace>
+    - totalCost: double
+    - ownerEmail: String
+    + getTripId(): String
+    + setTripId(String)
+    + getTitle(): String
+    + setTitle(String)
+    + getStartDate(): Date
+    + setStartDate(Date)
+    + getEndDate(): Date
+    + setEndDate(Date)
+    + getPlaces(): List<TripPlace>
+    + setPlaces(List<TripPlace>)
+    + getTotalCost(): double
+    + setTotalCost(double)
+    + getOwnerEmail(): String
+    + setOwnerEmail(String)
+  }
+
+  class TripPlace {
+    - placeId: String
+    - name: String
+    - address: String
+    - location: GeoPoint
+    - price: double
+    - date: Date
+    + getPlaceId(): String
+    + setPlaceId(String)
+    + getName(): String
+    + setName(String)
+    + getAddress(): String
+    + setAddress(String)
+    + getLocation(): GeoPoint
+    + setLocation(GeoPoint)
+    + getPrice(): double
+    + setPrice(double)
+    + getDate(): Date
+    + setDate(Date)
+  }
+
+  class Profile {
+    - email: String
+    - name: String
+    - preferredCurrency: String
+    - photoUrl: String
+    + getEmail(): String
+    + getName(): String
+    + setName(String)
+    + getPreferredCurrency(): String
+    + setPreferredCurrency(String)
+    + getPhotoUrl(): String
+    + setPhotoUrl(String)
+  }
+}
+
+package "com.example.project12.data" {
+  class TripRepository {
+    + getAllTrips(TripsCallback)
+    + getTripById(String, SingleTripCallback)
+    + getTripsByUser(String, TripsCallback)
+    + saveTrip(Trip, TripsCallback)
+    + deleteTrip(String, ActionCallback)
+  }
+  class ProfileRepository {
+    + getAllProfiles(ProfilesCallback)
+    + getProfileByEmail(String, SingleProfileCallback)
+    + saveProfile(Profile, SingleProfileCallback)
+    + deleteProfile(String, ActionCallback)
+  }
+}
+
+package "com.example.project12.ui.viewmodel" {
+  class TripViewModel {
+    - allTrips: MutableLiveData<List<Trip>>
+    - pastTrips: MutableLiveData<List<Trip>>
+    - selectedTrip: MutableLiveData<Trip>
+    - errorMessage: MutableLiveData<String>
+    + loadAllTrips()
+    + loadPastTrips()
+    + loadTripById(String)
+    + saveTrip(Trip)
+    + deleteTrip(String)
+    + getAllTrips(): LiveData<List<Trip>>
+    + getPastTrips(): LiveData<List<Trip>>
+    + getSelectedTrip(): LiveData<Trip>
+    + getErrorMessage(): LiveData<String>
+  }
+  class ProfileViewModel {
+    - profiles: MutableLiveData<List<Profile>>
+    - currentProfile: MutableLiveData<Profile>
+    - errorMessage: MutableLiveData<String>
+    + loadProfiles()
+    + loadCurrentProfile(String)
+    + loadTripsForProfile(String)
+    + saveProfile(Profile)
+    + changePassword(String)
+    + getProfiles(): LiveData<List<Profile>>
+    + getCurrentProfile(): LiveData<Profile>
+    + getErrorMessage(): LiveData<String>
+  }
+}
+
+package "com.example.project12.ui" {
+  class HomeActivity
+  class AuthActivity
+  class PastTripsActivity
+  class TripPlanningActivity
+  class TripDetailsActivity
+  class SharedTripsActivity
+  class ProfileActivity
+  class EditProfileFragment
+}
+
+'— relationships —
+Trip "1" -- "0..*" TripPlace : places
+TripViewModel ..> TripRepository
+TripViewModel ..> Trip
+ProfileViewModel ..> ProfileRepository
+TripDetailsActivity --> TripViewModel
+TripPlanningActivity --> TripViewModel
+PastTripsActivity --> TripViewModel
+SharedTripsActivity --> TripViewModel
+ProfileActivity --> ProfileViewModel
+EditProfileFragment --> ProfileViewModel
+
+@enduml

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Project12</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="select_day">Select Day</string>
+    <string name="places_api_key">AIzaSyD8y04VFeSCehXPwEP4UY0PmmfDuB2hOTE</string>
+</resources>

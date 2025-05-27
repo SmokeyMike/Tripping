@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TripPlanningActivity">
+
+    ```
+    <!-- AppCompat Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Destination Autocomplete -->
+            <fragment
+                android:id="@+id/autocomplete_destination"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="FragmentTagUsage" />
+
+            <!-- Trip Dates -->
+            <EditText
+                android:id="@+id/etStartDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="Start date"
+                android:layout_marginTop="12dp" />
+
+            <EditText
+                android:id="@+id/etEndDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="End date"
+                android:layout_marginTop="8dp" />
+
+            <!-- Accommodation Autocomplete + Cost -->
+            <fragment
+                android:id="@+id/autocomplete_accommodation"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                tools:ignore="FragmentTagUsage" />
+
+            <EditText
+                android:id="@+id/etAccommodationCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Estimated accommodation cost"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="8dp" />
+
+            <!-- Activity Autocomplete + Cost -->
+            <fragment
+                android:id="@+id/autocomplete_activity"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                tools:ignore="FragmentTagUsage" />
+
+            <EditText
+                android:id="@+id/etCurrentActivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="Selected activity will appear here"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/etActivityCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Estimated activity cost"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="8dp" />
+
+            <!-- Day Selector & Add -->
+            <Spinner
+                android:id="@+id/spDaySelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:prompt="@string/select_day" />
+
+            <Button
+                android:id="@+id/btnAddActivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Activity to Day"
+                android:layout_marginTop="8dp" />
+
+            <!-- Review Summary Button -->
+            <Button
+                android:id="@+id/btnGoToDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trip summary"
+                android:layout_marginTop="16dp"
+                android:padding="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+    ```
+
+</LinearLayout>
