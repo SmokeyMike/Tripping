@@ -9,34 +9,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Destination -->
         <TextView
             android:id="@+id/tvDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:text="Destination"/>
+            android:text="Destination" />
 
+        <!-- Dates -->
         <TextView
             android:id="@+id/tvDates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Dates"/>
+            android:text="Dates" />
 
+        <!-- Accommodation -->
         <TextView
             android:id="@+id/tvAccommodation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Accommodation"/>
+            android:text="Accommodation" />
 
+        <!-- Weather Header -->
+        <TextView
+            android:id="@+id/tvWeatherHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:text="Weather Forecast" />
+
+        <!-- Container for weather items -->
+        <LinearLayout
+            android:id="@+id/llWeather"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
+
+        <!-- Activities Header -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textStyle="bold"
-            android:text="Activities"/>
+            android:text="Activities" />
 
         <!-- Container for activity items -->
         <LinearLayout
@@ -44,14 +65,16 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="4dp" />
 
+        <!-- Total Expense -->
         <TextView
             android:id="@+id/tvTotalExpense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textStyle="bold"
-            android:text="Total Expense"/>
+            android:text="Total Expense" />
+
     </LinearLayout>
 </ScrollView>
