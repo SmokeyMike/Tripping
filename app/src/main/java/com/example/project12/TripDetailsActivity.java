@@ -58,7 +58,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         tripVM = new ViewModelProvider(this).get(TripViewModel.class);
 
         // 3) Read Trip from Intent
-        trip = getIntent().getParcelableExtra(EXTRA_TRIP);
+        trip = getIntent().getParcelableExtra("trip");
         if (trip == null) {
             Toast.makeText(this, "No trip data available", Toast.LENGTH_LONG).show();
             finish();
@@ -94,6 +94,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         btnSave.setOnClickListener(v -> {
             tripVM.saveTrip(trip);
             Toast.makeText(this, "Trip saved", Toast.LENGTH_SHORT).show();
+            finish();
         });
     }
 

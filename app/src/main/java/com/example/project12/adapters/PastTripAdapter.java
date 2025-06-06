@@ -1,82 +1,83 @@
 package com.example.project12.adapters;
 
-import android.icu.text.SimpleDateFormat;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.project12.R;
-import com.example.project12.models.Profile;
+import com.example.project12.TripDetailsActivity;
 import com.example.project12.models.Trip;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class PastTripAdapter extends ListAdapter<Trip, PastTripAdapter.PastTripViewHolder> {
+public class PastTripAdapter extends RecyclerView.Adapter<PastTripAdapter.PastTripViewHolder> {
 
-    public interface OnTripClickListener {
-        void onTripClick(Trip trip);
-    }
+    private final Context context;
+    private final List<Trip> tripList = new ArrayList<>();
+    private final SimpleDateFormat dateFormatter =
+            new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
-    private final OnTripClickListener listener;
-    private static final SimpleDateFormat dateFormat =
-            new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
-
-    public PastTripAdapter(OnTripClickListener listener) {
-        super(new DiffUtil.ItemCallback<Trip>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Trip oldItem, @NonNull Trip newItem) {
-                return oldItem.getTripId().equals(newItem.getTripId());
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull Trip oldItem, @NonNull Trip newItem) {
-                return oldItem.equals(newItem);
-            }
-        });
-        this.listener = listener;
+    public PastTripAdapter(Context context) {
+        this.context = context;
     }
 
     @NonNull
     @Override
     public PastTripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.item_past_trip, parent, false);
-        return new PastTripViewHolder(view);
+        return new PastTripViewHolder(itemView);
     }
 
+    // PastTripAdapter.java
     @Override
     public void onBindViewHolder(@NonNull PastTripViewHolder holder, int position) {
-        Trip trip = getItem(position);
-        holder.bind(trip);
+        Trip trip = tripList.get(position);
+
+        holder.tvTripTitle.setText(trip.getDestination());
+        String start = dateFormatter.format(trip.getStartDate());
+        String end = dateFormatter.format(trip.getEndDate());
+        holder.tvTripDates.setText(start + " – " + end);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, TripDetailsActivity.class);
+            intent.putExtra("trip", trip); // send entire Trip
+            context.startActivity(intent);
+        });
     }
 
-    class PastTripViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDates;
 
-        PastTripViewHolder(View itemView) {
-            super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvTripTitle);
-            tvDates = itemView.findViewById(R.id.tvTripDates);
-            itemView.setOnClickListener(v -> listener.onTripClick(getItem(getAdapterPosition())));
+    @Override
+    public int getItemCount() {
+        return tripList.size();
+    }
+
+    /** Replace current list with new data and refresh */
+    public void submitList(List<Trip> newTrips) {
+        tripList.clear();
+        if (newTrips != null) {
+            tripList.addAll(newTrips);
         }
+        notifyDataSetChanged();
+    }
 
-        void bind(Trip trip) {
-            tvTitle.setText(trip.getDestination());
-            Date start = trip.getStartDate();
-            Date end = trip.getEndDate();
-            String dates = dateFormat.format(start) + " – " + dateFormat.format(end);
-            tvDates.setText(dates);
+    static class PastTripViewHolder extends RecyclerView.ViewHolder {
+        final TextView tvTripTitle;
+        final TextView tvTripDates;
+
+        PastTripViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvTripTitle = itemView.findViewById(R.id.tvTripTitle);
+            tvTripDates = itemView.findViewById(R.id.tvTripDates);
         }
     }
 }
-
