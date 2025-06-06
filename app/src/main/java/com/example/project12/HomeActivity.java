@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.net.InetAddress;
 
 public class HomeActivity extends AppCompatActivity {
     private Button btnPlanNewTrip;
@@ -21,6 +24,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Log.d("Home", "onCreate()");
+
 
         // 1) Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
