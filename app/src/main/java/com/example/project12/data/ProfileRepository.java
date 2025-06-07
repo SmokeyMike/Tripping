@@ -17,7 +17,7 @@ import java.util.List;
  * Repository for Profile-related Firestore operations.
  */
 public class ProfileRepository {
-    private final CollectionReference profilesRef;
+    private final CollectionReference profiles;
 
     /** Callback for list-of-profiles queries */
     public interface ProfilesCallback {
@@ -38,12 +38,12 @@ public class ProfileRepository {
     }
 
     public ProfileRepository() {
-        profilesRef = FirebaseFirestore.getInstance().collection("profiles");
+        profiles = FirebaseFirestore.getInstance().collection("profiles");
     }
 
     /** Fetch all profiles */
     public void getAllProfiles(@NonNull ProfilesCallback callback) {
-        profilesRef
+        profiles
                 .get()
                 .addOnSuccessListener((QuerySnapshot snapshot) -> {
                     List<Profile> list = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ProfileRepository {
 
     /** Fetch a profile by email (assumes document ID == email) */
     public void getProfileByEmail(@NonNull String email, @NonNull SingleProfileCallback callback) {
-        profilesRef.document(email)
+        profiles.document(email)
                 .get()
                 .addOnSuccessListener((DocumentSnapshot doc) -> {
                     if (doc.exists()) {
@@ -80,7 +80,7 @@ public class ProfileRepository {
     /** Create or update a profile (uses email as document ID) */
     public void saveProfile(@NonNull Profile profile, @NonNull SingleProfileCallback callback) {
         String email = profile.getEmail();
-        DocumentReference ref = profilesRef.document(email);
+        DocumentReference ref = profiles.document(email);
         ref.set(profile)
                 .addOnSuccessListener(aVoid -> callback.onSuccess(profile))
                 .addOnFailureListener(callback::onFailure);
@@ -88,7 +88,7 @@ public class ProfileRepository {
 
     /** Delete a profile by email */
     public void deleteProfile(@NonNull String email, @NonNull ActionCallback callback) {
-        profilesRef.document(email)
+        profiles.document(email)
                 .delete()
                 .addOnSuccessListener(aVoid -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);

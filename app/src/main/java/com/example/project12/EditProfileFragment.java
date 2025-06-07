@@ -17,14 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.example.project12.R;
 import com.example.project12.models.Profile;
 import com.example.project12.ui.viewmodel.ProfileViewModel;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,8 +33,7 @@ public class EditProfileFragment extends DialogFragment {
     private ImageView ivPhoto;
     private EditText etName, etPassword;
     private Spinner spCurrency;
-    private Button btnChoosePhoto, btnSave;
-
+    private Button btnChoosePhoto, btnSave, btnCancel;
     private Uri selectedPhotoUri;
 
     @Nullable
@@ -49,88 +45,98 @@ public class EditProfileFragment extends DialogFragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View v, @Nullable Bundle s) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         vm = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
-        ivPhoto     = v.findViewById(R.id.ivEditPhoto);
-        etName      = v.findViewById(R.id.etEditName);
-        etPassword  = v.findViewById(R.id.etEditPassword);
-        spCurrency  = v.findViewById(R.id.spEditCurrency);
-        btnChoosePhoto = v.findViewById(R.id.btnChoosePhoto);
-        btnSave     = v.findViewById(R.id.btnSaveProfile);
+        ivPhoto       = view.findViewById(R.id.ivEditPhoto);
+        etName        = view.findViewById(R.id.etEditName);
+        etPassword    = view.findViewById(R.id.etEditPassword);
+        spCurrency    = view.findViewById(R.id.spEditCurrency);
+        btnChoosePhoto= view.findViewById(R.id.btnChoosePhoto);
+        btnSave       = view.findViewById(R.id.btnSaveProfile);
 
-        // pre-fill current values
-        vm.getCurrentProfile().observe(getViewLifecycleOwner(), p -> {
-            if (p == null) return;
-            etName.setText(p.getName());
-            // assume you've populated your Spinner with currencies already
-            int idx = ((ArrayAdapter<String>)spCurrency.getAdapter())
-                    .getPosition(p.getCurrency());
-            spCurrency.setSelection(idx);
-            if (p.getPhotoUrl() != null) {
-                Glide.with(this).load(p.getPhotoUrl()).into(ivPhoto);
+        // Initialize currency spinner
+        String[] currencies = {"ILS", "USD", "EUR"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                currencies
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCurrency.setAdapter(adapter);
+
+        // Observe current profile
+        vm.getCurrentProfile().observe(getViewLifecycleOwner(), profile -> {
+            if (profile == null) return;
+            etName.setText(profile.getName());
+            int pos = adapter.getPosition(profile.getCurrency());
+            if (pos >= 0) spCurrency.setSelection(pos);
+            String url = profile.getPhotoUrl();
+            if (url != null && !url.isEmpty()) {
+                Glide.with(this).load(url).into(ivPhoto);
             }
         });
         vm.getErrorMessage().observe(getViewLifecycleOwner(), err -> {
             if (err != null) Toast.makeText(getContext(), err, Toast.LENGTH_LONG).show();
         });
 
-        btnChoosePhoto.setOnClickListener(c -> {
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.setType("image/*");
-            startActivityForResult(i, RC_PICK_PHOTO);
+        // Photo chooser
+        btnChoosePhoto.setOnClickListener(v -> {
+            Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
+            pick.setType("image/*");
+            startActivityForResult(pick, RC_PICK_PHOTO);
         });
 
-        btnSave.setOnClickListener(sv -> {
+        // Save changes
+        btnSave.setOnClickListener(v -> {
             Profile cur = vm.getCurrentProfile().getValue();
             if (cur == null) return;
 
-            cur.setName(etName.getText().toString().trim());
+            String newName = etName.getText().toString().trim();
+            if (newName.isEmpty()) {
+                etName.setError("Name cannot be empty");
+                return;
+            }
+            cur.setName(newName);
             cur.setCurrency(spCurrency.getSelectedItem().toString());
 
-            vm.saveProfile(cur);
-
+            // Change password if needed
             String newPass = etPassword.getText().toString();
             if (!newPass.isEmpty()) {
                 vm.changePassword(newPass);
             }
 
-            // if photo was chosen, upload it and then update URL in profile object:
+            // Upload photo if selected, then save profile
             if (selectedPhotoUri != null) {
-                // inside btnSave onClick, after selectedPhotoUri != null:
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 StorageReference ref = FirebaseStorage.getInstance()
                         .getReference("profile_photos/" + uid + ".jpg");
-
                 ref.putFile(selectedPhotoUri)
                         .continueWithTask(task -> {
                             if (!task.isSuccessful()) throw task.getException();
                             return ref.getDownloadUrl();
                         })
                         .addOnSuccessListener(uri -> {
-                            // … same code to saveProfile
+                            cur.setPhotoUrl(uri.toString());
+                            vm.saveProfile(cur);
+                            dismiss();
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(),
-                                            "Upload failed: " + e.getMessage(),
-                                            Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         });
-
+            } else {
+                vm.saveProfile(cur);
+                dismiss();
             }
-
-            // dismiss fragment
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(EditProfileFragment.this)
-                    .commit();
         });
     }
 
     @Override
-    public void onActivityResult(int req, int res, @Nullable Intent data) {
-        super.onActivityResult(req, res, data);
-        if (req == RC_PICK_PHOTO && res == Activity.RESULT_OK && data != null) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_PICK_PHOTO && resultCode == Activity.RESULT_OK && data != null) {
             selectedPhotoUri = data.getData();
             ivPhoto.setImageURI(selectedPhotoUri);
         }

@@ -22,8 +22,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TripDetailsActivity.java
@@ -40,6 +42,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
     public static final String EXTRA_TRIP = "selectedTrip";
 
     private Trip trip;
+    private String ownerEmail;
     private GoogleMap googleMap;
     private TripViewModel tripVM;
 
@@ -59,6 +62,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
 
         // 3) Read Trip from Intent
         trip = getIntent().getParcelableExtra("trip");
+        ownerEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         if (trip == null) {
             Toast.makeText(this, "No trip data available", Toast.LENGTH_LONG).show();
             finish();
@@ -91,9 +95,17 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
 
         // 7) Save Trip button (now using tripVM instance)
         Button btnSave = findViewById(R.id.btnSave);
+        boolean back;
+        if (Objects.equals(trip.getOwnerEmail(), ownerEmail)) {back = false;}
+        else {
+            btnSave.setText("Back");
+            back = true;
+        }
         btnSave.setOnClickListener(v -> {
-            tripVM.saveTrip(trip);
-            Toast.makeText(this, "Trip saved", Toast.LENGTH_SHORT).show();
+            if (!back){
+                tripVM.saveTrip(trip);
+                Toast.makeText(this, "Trip saved", Toast.LENGTH_SHORT).show();
+            }
             finish();
         });
     }

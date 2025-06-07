@@ -23,11 +23,13 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView ivPhoto;
     private TextView tvName, tvEmail, tvCurrency;
     private Button btnEdit;
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -44,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // ViewModel
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        viewModel.loadCurrentProfile(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         viewModel.getCurrentProfile().observe(this, this::bindProfile);
         viewModel.getErrorMessage().observe(this, err -> {
             if (err != null) Toast.makeText(this, err, Toast.LENGTH_LONG).show();

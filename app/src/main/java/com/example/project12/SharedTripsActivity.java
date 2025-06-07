@@ -71,7 +71,7 @@ public class SharedTripsActivity extends AppCompatActivity {
         tripAdapter = new SharedTripAdapter(trip -> {
             // on trip tapped: open details
             Intent i = new Intent(this, TripDetailsActivity.class);
-            i.putExtra("tripId", trip.getTripId());
+            i.putExtra("trip", trip);
             startActivity(i);
         });  // :contentReference[oaicite:2]{index=2}
         rvProfileTrips.setLayoutManager(new LinearLayoutManager(this));
